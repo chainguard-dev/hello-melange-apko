@@ -2,9 +2,9 @@
 
 ## Build apks with melange
 
-Make sure the `packages/` directory is removed, as well as `target/`:
+Make sure the `packages/` directory is removed:
 ```
-rm -rf ./packages/ ./target/
+rm -rf ./packages/
 ```
 
 Create a temporary melange keypair:
