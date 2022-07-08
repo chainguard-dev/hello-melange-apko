@@ -41,10 +41,22 @@ REF="ghcr.io/chainguard-dev/melange-apko-cosign-examples/go/hello-server"
 
 docker run -it -v $(pwd):/github/workspace -w /github/workspace \
     -v $(pwd)/packages:/github/workspace/packages \
-    distroless.dev/apko build apko.yaml \
-    "${REF}" output.tar -k melange.rsa --build-arch amd64,aarch64,armv7
+    distroless.dev/apko build --debug apko.yaml \
+    "${REF}" output.tar -k melange.rsa.pub \
+    --build-arch amd64,aarch64,armv7
 ```
-/github/workspace/packages
+
+To debug the above:
+```
+docker run -it -v $(pwd):/github/workspace -w /github/workspace \
+    -v $(pwd)/packages:/github/workspace/packages \
+    -e REF="${REF}" \
+    --entrypoint sh \
+    distroless.dev/apko
+
+# Build image (use just --build-arch amd64 to isolate issue)
+apko build --debug apko.yaml "${REF}" output.tar -k melange.rsa.pub --build-arch amd64,aarch64,armv7
+```
 
 ## Sign image with cosign
 

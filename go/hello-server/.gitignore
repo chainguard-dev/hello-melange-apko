@@ -1,3 +1,5 @@
 melange.rsa
 melange.rsa.pub
 packages/
+output.tar
+sbom-*
