@@ -15,20 +15,6 @@ docker run -it -v $(pwd):/w -w /w -v $(pwd)/packages:/w/packages --privileged \
     --repository-append /w/packages --keyring-append melange.rsa
 ```
 
-Create the repo indexes using apk and sign them using melange:
-```
-docker run -it -v $(pwd):/w -w /w/packages -v $(pwd)/packages:/w/packages \
-    --entrypoint sh \
-    distroless.dev/melange -c \
-        'for d in `find . -type d -mindepth 1`; do \
-            ( \
-                cd $d && \
-                apk index -o APKINDEX.tar.gz *.apk && \
-                melange sign-index --signing-key=../../melange.rsa APKINDEX.tar.gz\
-            ) \
-        done'
-```
-
 To debug the above:
 ```
 docker run -it -v $(pwd):/w -w /w -v $(pwd)/packages:/w/packages --privileged \
@@ -45,6 +31,22 @@ apk add ./packages/x86_64/hello-server-*.apk --allow-untrusted --force-broken-wo
 
 # Delete an apk
 apk del hello-server --force-broken-world
+```
+
+## Generate apk repo indexes
+
+Create the repo indexes using apk and sign them using melange:
+```
+docker run -it -v $(pwd):/w -w /w/packages -v $(pwd)/packages:/w/packages \
+    --entrypoint sh \
+    distroless.dev/melange -c \
+        'for d in `find . -type d -mindepth 1`; do \
+            ( \
+                cd $d && \
+                apk index -o APKINDEX.tar.gz *.apk && \
+                melange sign-index --signing-key=../../melange.rsa APKINDEX.tar.gz\
+            ) \
+        done'
 ```
 
 ## Build image with apko
