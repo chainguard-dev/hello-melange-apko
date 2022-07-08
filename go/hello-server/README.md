@@ -15,13 +15,18 @@ docker run -it -v $(pwd):/w -w /w -v $(pwd)/packages:/w/packages --privileged \
     --repository-append /w/packages --keyring-append melange.rsa
 ```
 
-Create the repo index using apk and sign it using melange:
+Create the repo indexes using apk and sign them using melange:
 ```
 docker run -it -v $(pwd):/w -w /w/packages -v $(pwd)/packages:/w/packages \
     --entrypoint sh \
     distroless.dev/melange -c \
-        'apk index -o APKINDEX.tar.gz **/*.apk && \
-            melange sign-index --signing-key=../melange.rsa APKINDEX.tar.gz'
+        'for d in `find . -type d -mindepth 1`; do \
+            ( \
+                cd $d && \
+                apk index -o APKINDEX.tar.gz *.apk && \
+                melange sign-index --signing-key=../../melange.rsa APKINDEX.tar.gz\
+            ) \
+        done'
 ```
 
 To debug the above:
