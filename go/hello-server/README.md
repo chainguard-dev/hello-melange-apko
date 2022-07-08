@@ -143,5 +143,7 @@ COSIGN_EXPERIMENTAL=1 cosign verify "${REF}"
 Finally, run the image using docker:
 
 ```
+REF="ghcr.io/chainguard-dev/melange-apko-cosign-examples/go/hello-server"
 
+docker run --rm -p 8080:8080 "${REF}
 ```
