@@ -23,6 +23,4 @@ environment:
 pipeline:
   - name: Build Go application
     runs: |
-      EXE_OUTPUT_DIR="${PWD}/melange-out/hello-server/usr/local/bin"
-      mkdir -p "${EXE_OUTPUT_DIR}"
-      CGO_ENABLED=0 go build -o "./${EXE_OUTPUT_DIR}/hello-server" .
+      CGO_ENABLED=0 go build -o "${{targets.destdir}}/usr/bin/hello-server" .

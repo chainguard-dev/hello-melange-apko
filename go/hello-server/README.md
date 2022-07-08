@@ -2,6 +2,11 @@
 
 ## Build apks with melange
 
+Make sure the `packages/` directory is removed:
+```
+rm -rf ./packages/
+```
+
 Create a temporary melange keypair:
 ```
 docker run -it -v $(pwd):/w -w /w distroless.dev/melange keygen
@@ -21,7 +26,7 @@ docker run -it -v $(pwd):/w -w /w -v $(pwd)/packages:/w/packages --privileged \
     --entrypoint sh \
     distroless.dev/melange
 
-# Build apks (use just --arch x86_64 to isolate issue)
+# Build apks (use just --arch amd64 to isolate issue)
 melange build melange.yaml --out-dir /w/packages \
     --arch amd64,aarch64,armv7 \
     --repository-append /w/packages --keyring-append melange.rsa
