@@ -51,6 +51,8 @@ docker run -it -v $(pwd):/w -w /w/packages -v $(pwd)/packages:/w/packages \
 
 ## Build image with apko
 
+*Note: you could skip this step and go to "Push image with apko".*
+
 Build an apk for all architectures using melange:
 ```
 REF="ghcr.io/chainguard-dev/melange-apko-cosign-examples/go/hello-server"
@@ -74,6 +76,72 @@ docker run -it -v $(pwd):/github/workspace -w /github/workspace \
 apko build --debug apko.yaml "${REF}" output.tar -k melange.rsa.pub --build-arch amd64,aarch64,armv7
 ```
 
+## Push image with apko
+
+Build and push an image to, for example, GHCR:
+```
+REF="ghcr.io/chainguard-dev/melange-apko-cosign-examples/go/hello-server"
+
+# Your GitHub username
+GITHUB_USERNAME="myuser"
+
+# A personal access token with the "write:packages" scope
+GITHUB_TOKEN="*****"
+
+docker run -it -v $(pwd):/github/workspace -w /github/workspace \
+    -v $(pwd)/packages:/github/workspace/packages \
+    -e REF="${REF}" \
+    -e GITHUB_USERNAME="${GITHUB_USERNAME}" \
+    -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
+    --entrypoint sh \
+    distroless.dev/apko -c \
+        'echo "${GITHUB_TOKEN}" | \
+            apko login ghcr.io -u "${GITHUB_USERNAME}" --password-stdin && \
+            apko publish --debug apko.yaml \
+                "${REF}" -k melange.rsa.pub \
+                --arch amd64,aarch64,armv7'
+```
+
 ## Sign image with cosign
 
-TODO
+After the image has been published, sign it using cosign:
+
+```
+REF="ghcr.io/chainguard-dev/melange-apko-cosign-examples/go/hello-server"
+
+COSIGN_EXPERIMENTAL=1 cosign sign -y -f "${REF}"
+```
+
+This should use "keyless" mode and open a browser window for you to
+authenticate.
+
+Note: prior to running above, you may need to re-login to GHCR
+on the host using docker (or other tool):
+
+```
+# Your GitHub username
+GITHUB_USERNAME="myuser"
+
+# A personal access token with the "write:packages" scope
+GITHUB_TOKEN="*****"
+
+echo "${GITHUB_TOKEN}" | docker login ghcr.io -u "${GITHUB_USERNAME}" --password-stdin
+```
+
+## Verify the signature
+
+Verify that the image is signed using cosign:
+
+```
+REF="ghcr.io/chainguard-dev/melange-apko-cosign-examples/go/hello-server"
+
+COSIGN_EXPERIMENTAL=1 cosign verify "${REF}"
+```
+
+## Run the hello server image
+
+Finally, run the image using docker:
+
+```
+
+```
