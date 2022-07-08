@@ -1,0 +1,28 @@
+package:
+  name: hello-server
+  version: 0.1.0
+  description: friendly little webserver
+  target-architecture:
+    - all
+  copyright:
+    - license: Apache-2.0
+      paths:
+        - "*"
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+      - https://dl-cdn.alpinelinux.org/alpine/edge/community
+    packages:
+      - alpine-baselayout-data
+      - ca-certificates-bundle
+      - busybox
+      - go
+
+pipeline:
+  - name: Build Go application
+    runs: |
+      EXE_OUTPUT_DIR="${PWD}/melange-out/hello-server/usr/local/bin"
+      mkdir -p "${EXE_OUTPUT_DIR}"
+      CGO_ENABLED=0 go build -o "./${EXE_OUTPUT_DIR}/hello-server" .
