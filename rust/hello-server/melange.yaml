@@ -23,6 +23,7 @@ environment:
 pipeline:
   - name: Build Rust application
     runs: |
-      cargo build --release
+      TARGETDIR="$(mktemp -d -t melange-rust-build)"
+      cargo build --release --target-dir "${TARGETDIR}"
       mkdir -p "${{targets.destdir}}/usr/bin"
-      mv target/release/hello-server "${{targets.destdir}}/usr/bin"
+      mv "${TARGETDIR}/release/hello-server" "${{targets.destdir}}/usr/bin"
