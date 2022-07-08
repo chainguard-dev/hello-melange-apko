@@ -11,6 +11,7 @@ Build an apk for all architectures using melange:
 ```
 docker run -it -v $(pwd):/w -w /w -v $(pwd)/packages:/w/packages --privileged \
     distroless.dev/melange build melange.yaml --out-dir /w/packages \
+    --arch amd64,aarch64,armv7 \
     --repository-append /w/packages --keyring-append melange.rsa
 ```
 
@@ -32,9 +33,18 @@ apk add ./packages/x86_64/hello-server-*.apk --allow-untrusted --force-broken-wo
 apk del hello-server --force-broken-world
 ```
 
-## Build and push image with apko
+## Build image with apko
 
-TODO
+Build an apk for all architectures using melange:
+```
+REF="ghcr.io/chainguard-dev/melange-apko-cosign-examples/go/hello-server"
+
+docker run -it -v $(pwd):/github/workspace -w /github/workspace \
+    -v $(pwd)/packages:/github/workspace/packages \
+    distroless.dev/apko build apko.yaml \
+    "${REF}" output.tar -k melange.rsa --build-arch amd64,aarch64,armv7
+```
+/github/workspace/packages
 
 ## Sign image with cosign
 
