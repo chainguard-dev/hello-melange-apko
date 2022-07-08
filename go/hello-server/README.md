@@ -145,5 +145,15 @@ Finally, run the image using docker:
 ```
 REF="ghcr.io/chainguard-dev/melange-apko-cosign-examples/go/hello-server"
 
-docker run --rm -p 8080:8080 "${REF}
+docker run -it --rm -p 8080:8080 "${REF}"
+```
+
+Then in another terminal, try hitting the server using curl:
+
+```
+curl -s http://localhost:8080
+```
+
+```
+Hello World!
 ```
