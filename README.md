@@ -1,19 +1,30 @@
-# melange-demo-app
+# hello-melange-apko
 
-Example webapp showing how to:
+This is an example app showing how to:
+
 - Package source code into apks using [`melange`](https://github.com/chainguard-dev/melange)
 - Build and publish OCI images using [`apko`](https://github.com/chainguard-dev/apko)
 - Sign and verify OCI images using [`cosign`](https://github.com/chainguard-dev/apko)
 
+The app itself is a basic HTTP server that returns "Hello World!"
+
+```
+$ curl -s http://localhost:8080
+Hello World!
+```
+
 ## Variations
 
-| Language   | Path        | Notes                                 |
-|------------|-------------| ------------------------------------- |
-| Go         | [`go/`]()   | uses gin                              |
+| Language   | Path        | Notes                                                      |
+|------------|-------------| ---------------------------------------------------------- |
+| Go         | [`go/`]()   | uses gin                                                   |
 | JavaScript | [`js/`]()   | uses express, vendors node_modules, apk depends on nodejs  |
-| Python     | [`py/`]()   | uses flask, vendors virtualenv, apk depends on python3 |
-| Ruby       | [`ruby/`]() | uses sinatra, vendors bundle, apk depends on ruby   |
-| Rust       | [`rust/`]() | uses hyper, currently builds very slow cross-platform    |
+| Python     | [`py/`]()   | uses flask, vendors virtualenv, apk depends on python3     |
+| Ruby       | [`ruby/`]() | uses sinatra, vendors bundle, apk depends on ruby          |
+| Rust       | [`rust/`]() | uses hyper, currently builds very slow cross-platform      |
+
+Note: third-party server frameworks are used here intentionally
+to validate the packaging of dependencies.
 
 ## "The hard way"
 
