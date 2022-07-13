@@ -1,0 +1,40 @@
+package:
+  name: hello-server
+  version: 0.1.0
+  description: friendly little webserver
+  target-architecture:
+    - all
+  copyright:
+    - license: Apache-2.0
+      paths:
+        - "*"
+  dependencies:
+    runtime:
+      - python3
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+      - https://dl-cdn.alpinelinux.org/alpine/edge/community
+    packages:
+      - alpine-baselayout-data
+      - ca-certificates-bundle
+      - busybox
+      - gcc
+      - musl-dev
+      - python3
+      - py3-pip
+      - py3-virtualenv
+
+pipeline:
+  - name: Build Python application
+    runs: |
+      EXECDIR="${{targets.destdir}}/usr/bin"
+      WEBAPPDIR="${{targets.destdir}}/usr/share/webapps/hello-server"
+      mkdir -p "${EXECDIR}" "${WEBAPPDIR}"
+      echo "#!/usr/share/webapps/hello-server/venv/bin/python3" > "${EXECDIR}/hello-server"
+      cat main.py >> "${EXECDIR}/hello-server"
+      chmod +x "${EXECDIR}/hello-server"
+      virtualenv "${WEBAPPDIR}/venv"
+      sh -c "source '${WEBAPPDIR}/venv/bin/activate' && pip install -r requirements.txt"
