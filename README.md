@@ -1,10 +1,9 @@
 # hello-melange-apko
 
-This is an example app showing how to:
+This repo contains an  example app duplicated across 5 languages showing how to:
 
 - Package source code into apks using [`melange`](https://github.com/chainguard-dev/melange)
 - Build and publish OCI images using [`apko`](https://github.com/chainguard-dev/apko)
-- Sign and verify OCI images using [`cosign`](https://github.com/chainguard-dev/apko)
 
 The app itself is a basic HTTP server that returns "Hello World!"
 
@@ -15,16 +14,16 @@ Hello World!
 
 ## Variations
 
-| Language   | Path        | Notes                                                      |
-|------------|-------------| ---------------------------------------------------------- |
-| Go         | [`go/`]()   | uses gin                                                   |
-| JavaScript | [`js/`]()   | uses express, vendors node_modules, apk depends on nodejs  |
-| Python     | [`py/`]()   | uses flask, vendors virtualenv, apk depends on python3     |
-| Ruby       | [`ruby/`]() | uses sinatra, vendors bundle, apk depends on ruby          |
-| Rust       | [`rust/`]() | uses hyper, currently builds very slow cross-platform      |
+| Language   | Repo Path          | GitHub Action                                                  | Notes                                                     |
+|------------|------------------- | -------------------------------------------------------------- | --------------------------------------------------------- |
+| Go         | [`go/`](./go/)     | [`go.yml`](./.github/workflows/go.yml)       | uses gin                                                  |
+| JavaScript | [`js/`](./js/)     | [`js.yml`](./.github/workflows/js.yml)       | uses express, vendors node_modules, depends on nodejs |
+| Python     | [`py/`](./py/)     | [`py.yml`](./.github/workflows/py.yml)       | uses flask, vendors virtualenv, depends on python3    |
+| Ruby       | [`ruby/`](./ruby/) | [`ruby.yml`](./.github/workflows/ruby.yml)   | uses sinatra, vendors bundle, depends on ruby         |
+| Rust       | [`rust/`](./rust/) | [`rust.yml`](./.github/workflows/rust.yml)   | uses hyper, currently builds very slow cross-platform     |
 
-Note: third-party server frameworks are used here intentionally
-to validate the packaging of dependencies.
+Note: third-party server frameworks are used intentionally
+to validate the use of dependencies.
 
 ## "The hard way"
 
