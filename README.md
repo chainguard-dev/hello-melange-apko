@@ -1,4 +1,4 @@
-# hello-melange-apko
+# hello-melange-apko 💫
 
 This repo contains an  example app duplicated across 5 languages showing how to:
 
@@ -115,7 +115,7 @@ Build an apk for all architectures using melange:
 ```
 # Your GitHub username
 GITHUB_USERNAME="myuser"
-REF="ghcr.io/${GITHUB_USERNAME}/melange-demo-app/$(basename "${PWD}")"
+REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
 docker run -it -v $(pwd):/github/workspace -w /github/workspace \
     -v $(pwd)/packages:/github/workspace/packages \
@@ -142,7 +142,7 @@ Build and push an image to, for example, GHCR:
 ```
 # Your GitHub username
 GITHUB_USERNAME="myuser"
-REF="ghcr.io/${GITHUB_USERNAME}/melange-demo-app/$(basename "${PWD}")"
+REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
 # A personal access token with the "write:packages" scope
 GITHUB_TOKEN="*****"
@@ -163,14 +163,14 @@ docker run -it -v $(pwd):/github/workspace -w /github/workspace \
 
 ## Sign image with cosign
 
-After the image has been published, sign it using cosign:
+After the image has been published, sign it recursively using cosign:
 
 ```
 # Your GitHub username
 GITHUB_USERNAME="myuser"
-REF="ghcr.io/${GITHUB_USERNAME}/melange-demo-app/$(basename "${PWD}")"
+REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
-COSIGN_EXPERIMENTAL=1 cosign sign -y -f "${REF}"
+COSIGN_EXPERIMENTAL=1 cosign sign -r -y -f "${REF}"
 ```
 
 This should use "keyless" mode and open a browser window for you to
@@ -196,7 +196,7 @@ Verify that the image is signed using cosign:
 ```
 # Your GitHub username
 GITHUB_USERNAME="myuser"
-REF="ghcr.io/${GITHUB_USERNAME}/melange-demo-app/$(basename "${PWD}")"
+REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
 COSIGN_EXPERIMENTAL=1 cosign verify "${REF}"
 ```
@@ -208,7 +208,7 @@ Finally, run the image using docker:
 ```
 # Your GitHub username
 GITHUB_USERNAME="myuser"
-REF="ghcr.io/${GITHUB_USERNAME}/melange-demo-app/$(basename "${PWD}")"
+REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
 docker run -it --rm -p 8080:8080 "${REF}"
 ```
