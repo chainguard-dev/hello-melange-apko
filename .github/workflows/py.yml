@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - main
-
+    paths:
+      - .github/workflows/py.yml
+      - py/**
 jobs:
   build:
     runs-on: ubuntu-latest

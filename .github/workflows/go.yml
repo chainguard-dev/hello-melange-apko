@@ -1,19 +1,42 @@
-name: Go
-
+name: go
 on:
   push:
     branches:
       - main
-
+    paths:
+      - .github/workflows/go.yml
+      - go/**
+env:
+  variant: go
+  archs: amd64,aarch64,armv7
 jobs:
   build:
+    defaults:
+      run:
+        working-directory: go
+    name: Release Go variant image
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
       id-token: write
+      packages: write
+      contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-    # TODO: this workflow
+      - uses: actions/checkout@v3
+      - uses: sigstore/cosign-installer@main
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1.2.0
+      - uses: chainguard-dev/actions/melange-build@main
+        with:
+          sign-with-temporary-key: true
+          config: melange.yaml
+          empty-workspace: true
+          archs: ${{ env.archs }}
+      - uses: distroless/actions/apko-snapshot@main
+        with:
+          config: apko.yaml
+          base-tag: ghcr.io/${{ github.repository }}/${{ env.variant }}
+          keyring-append: /github/workspace/${{ env.variant }}/melange.rsa.pub
+          archs: ${{ env.archs }}
+      - name: sign image
+        run: |
+          COSIGN_EXPERIMENTAL=1 cosign sign -r -y -f ${{ steps.apko.outputs.digest }}
