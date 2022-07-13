@@ -19,7 +19,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v3
-      - name: populate workspace with variant source only
+      - name: Populate workspace with variant source only
         run: |
           shopt -s dotglob && tmp="$(mktemp -d)" && \
             mv ${variant}/* ${tmp}/ && rm -rf ./* && mv ${tmp}/* . && tree .

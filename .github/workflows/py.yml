@@ -1,5 +1,4 @@
 name: Python
-
 on:
   push:
     branches:
@@ -7,15 +6,35 @@ on:
     paths:
       - .github/workflows/py.yml
       - py/**
+env:
+  variant: py
+  archs: amd64,aarch64,armv7
 jobs:
   build:
+    name: Release Python variant image
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
       id-token: write
+      packages: write
+      contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-    # TODO: this workflow
+      - uses: actions/checkout@v3
+      - name: Populate workspace with variant source only
+        run: |
+          shopt -s dotglob && tmp="$(mktemp -d)" && \
+            mv ${variant}/* ${tmp}/ && rm -rf ./* && mv ${tmp}/* . && tree .
+      - uses: sigstore/cosign-installer@main
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1.2.0
+      - uses: chainguard-dev/actions/melange-build@main
+        with:
+          sign-with-temporary-key: true
+          config: melange.yaml
+          empty-workspace: false
+          archs: ${{ env.archs }}
+      - uses: distroless/actions/apko-snapshot@main
+        with:
+          config: apko.yaml
+          base-tag: ghcr.io/${{ github.repository }}/${{ env.variant }}
+          keyring-append: /github/workspace/melange.rsa.pub
+          archs: ${{ env.archs }}
