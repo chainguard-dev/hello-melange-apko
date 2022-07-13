@@ -1,4 +1,5 @@
-name: Go
+name: go
+concurrency: go
 on:
   schedule:
     - cron: '0 0 * * *'

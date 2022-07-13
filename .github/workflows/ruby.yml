@@ -1,4 +1,5 @@
-name: Ruby
+name: ruby
+concurrency: ruby
 on:
   schedule:
     - cron: '0 0 * * *'

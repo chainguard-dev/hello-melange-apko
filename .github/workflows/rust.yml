@@ -1,4 +1,5 @@
-name: Rust
+name: rust
+concurrency: rust
 on:
   schedule:
     - cron: '0 0 * * *'

@@ -1,4 +1,5 @@
-name: Python
+name: py
+concurrency: py
 on:
   schedule:
     - cron: '0 0 * * *'

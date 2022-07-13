@@ -1,4 +1,5 @@
-name: JavaScript
+name: js
+concurrency: js
 on:
   schedule:
     - cron: '0 0 * * *'
