@@ -1,0 +1,40 @@
+package:
+  name: hello-server
+  version: 0.1.0
+  description: friendly little webserver
+  target-architecture:
+    - all
+  copyright:
+    - license: Apache-2.0
+      paths:
+        - "*"
+  dependencies:
+    runtime:
+      - nodejs
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+      - https://dl-cdn.alpinelinux.org/alpine/edge/community
+    packages:
+      - alpine-baselayout-data
+      - ca-certificates-bundle
+      - busybox
+      - nodejs
+      - npm
+
+pipeline:
+  - name: Build Node application
+    runs: |
+      EXECDIR="${{targets.destdir}}/usr/bin"
+      WEBAPPDIR="${{targets.destdir}}/usr/share/webapps/hello-server"
+      mkdir -p "${EXECDIR}" "${WEBAPPDIR}"
+      echo "#!/usr/bin/env node" > "${EXECDIR}/hello-server"
+      echo "process.env.NODE_PATH = '/usr/share/webapps/hello-server/node_modules';" >> "${EXECDIR}/hello-server"
+      echo "require('module').Module._initPaths();" >> "${EXECDIR}/hello-server"
+      cat main.js >> "${EXECDIR}/hello-server"
+      chmod +x "${EXECDIR}/hello-server"
+      cp package.json "${WEBAPPDIR}"
+      cp package-lock.json "${WEBAPPDIR}"
+      (cd "${WEBAPPDIR}" && npm install --omit=dev)

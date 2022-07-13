@@ -1,0 +1,9 @@
+{
+  "name": "hello-server",
+  "version": "0.1.0",
+  "description": "friendly little webserver",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
