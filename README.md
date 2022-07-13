@@ -3,7 +3,7 @@
 This repo contains an  example app duplicated across 5 languages showing how to:
 
 - Package source code into apks using [`melange`](https://github.com/chainguard-dev/melange)
-- Build and publish OCI images using [`apko`](https://github.com/chainguard-dev/apko)
+- Build and publish OCI images from apks using [`apko`](https://github.com/chainguard-dev/apko)
 
 The app itself is a basic HTTP server that returns "Hello World!"
 
