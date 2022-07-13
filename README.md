@@ -2,8 +2,8 @@
 
 This repo contains an  example app duplicated across 5 languages showing how to:
 
-- Package source code into apks using [`melange`](https://github.com/chainguard-dev/melange)
-- Build and publish OCI images from apks using [`apko`](https://github.com/chainguard-dev/apko)
+- Package source code into APKs using [`melange`](https://github.com/chainguard-dev/melange)
+- Build and publish OCI images from APKs using [`apko`](https://github.com/chainguard-dev/apko)
 
 The app itself is a basic HTTP server that returns "Hello World!"
 
@@ -11,6 +11,8 @@ The app itself is a basic HTTP server that returns "Hello World!"
 $ curl -s http://localhost:8080
 Hello World!
 ```
+
+Wondering what "APKs" are? They're OS packages with a `.apk` extension (similar to `.rpm` / `.deb`) that are compatible with [`apk`](https://wiki.alpinelinux.org/wiki/Package_management).
 
 ## Variations
 
@@ -35,7 +37,7 @@ Requirements:
 - [`docker`](https://docs.docker.com/get-docker/)
 - [`cosign`](https://docs.sigstore.dev/cosign/installation/)
 
-Note: these steps should also work without `docker` on an [`apk`](https://docs.alpinelinux.org/user-handbook/0.1a/Working/apk.html)-based Linux distribution such as [Alpine](https://www.alpinelinux.org/), [Adélie](https://www.adelielinux.org/), etc.
+Note: these steps should also work without `docker` on an apk-based Linux distribution such as [Alpine](https://www.alpinelinux.org/).
 
 ### Change directory
 
