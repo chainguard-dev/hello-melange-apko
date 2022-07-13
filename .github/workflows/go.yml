@@ -28,7 +28,7 @@ jobs:
       - uses: chainguard-dev/actions/melange-build@main
         with:
           sign-with-temporary-key: true
-          config: melange.yaml
+          config: ${{ env.variant }}/melange.yaml
           empty-workspace: true
           archs: ${{ env.archs }}
       - uses: distroless/actions/apko-snapshot@main
