@@ -1,5 +1,11 @@
 # hello-melange-apko 💫
 
+[![GitHub Actions status](https://github.com/chainguard-dev/hello-melange-apko/workflows/go/badge.svg)](https://github.com/chainguard-dev/hello-melange-apko/actions?query=workflow%3Ago+branch%3Amain)
+[![GitHub Actions status](https://github.com/chainguard-dev/hello-melange-apko/workflows/js/badge.svg)](https://github.com/chainguard-dev/hello-melange-apko/actions?query=workflow%3Ajs+branch%3Amain)
+[![GitHub Actions status](https://github.com/chainguard-dev/hello-melange-apko/workflows/py/badge.svg)](https://github.com/chainguard-dev/hello-melange-apko/actions?query=workflow%3Apy+branch%3Amain)
+[![GitHub Actions status](https://github.com/chainguard-dev/hello-melange-apko/workflows/ruby/badge.svg)](https://github.com/chainguard-dev/hello-melange-apko/actions?query=workflow%3Aruby+branch%3Amain)
+[![GitHub Actions status](https://github.com/chainguard-dev/hello-melange-apko/workflows/rust/badge.svg)](https://github.com/chainguard-dev/hello-melange-apko/actions?query=workflow%3Arust+branch%3Amain)
+
 This repo contains an  example app duplicated across 5 languages showing how to:
 
 - Package source code into APKs using [`melange`](https://github.com/chainguard-dev/melange)
