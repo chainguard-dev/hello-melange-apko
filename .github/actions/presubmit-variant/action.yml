@@ -8,6 +8,7 @@ runs:
   using: composite
   steps:
     - uses: actions/checkout@v3
+
     - name: Populate workspace with variant source only
       shell: bash
       run: |
@@ -16,24 +17,26 @@ runs:
           mv .github ${tmp}/ && \
           rm -rf ./* && mv ${tmp}/* . && \
           echo ".github/" >> .melangeignore && tree -a .
-    - name: Setup QEMU
-      uses: docker/setup-qemu-action@v1.2.0
+
     - uses: chainguard-dev/actions/melange-build@main
       with:
         sign-with-temporary-key: true
         config: melange.yaml
         empty-workspace: false
         archs: ${{ inputs.archs }}
+
     - uses: distroless/actions/apko-build@main
       with:
         config: apko.yaml
         tag: ghcr.io/${{ github.repository }}/${{ inputs.variant }}
         keyring-append: /github/workspace/melange.rsa.pub
         archs: ${{ inputs.archs }}
+
     - name: Load image from apko-produced tarball
       shell: bash
       run: |
         docker load < output.tar
+
     - name: Smoke test
       shell: bash
       run: |
