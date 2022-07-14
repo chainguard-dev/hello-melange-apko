@@ -29,3 +29,12 @@ runs:
         base-tag: ghcr.io/${{ github.repository }}/${{ inputs.variant }}
         keyring-append: /github/workspace/melange.rsa.pub
         archs: ${{ inputs.archs }}
+    - name: Smoke test
+      shell: bash
+      run: |
+        docker run -d --rm -p 8080:8080 \
+          --name "smoketest-${{ inputs.variant }}" \
+          "${{ steps.apko.outputs.digest }}"
+        trap "docker rm -f smoketest-${{ inputs.variant }}" EXIT
+        sleep 5 # Give server a few seconds to come up
+        curl -v --max-time 10 http://localhost:8080/ | grep 'Hello World!'
