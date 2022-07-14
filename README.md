@@ -62,12 +62,12 @@ rm -rf ./packages/
 
 Create a temporary melange keypair:
 ```
-docker run -it -v $(pwd):/w -w /w distroless.dev/melange keygen
+docker run --rm -it -v $(pwd):/w -w /w distroless.dev/melange keygen
 ```
 
 Build an apk for all architectures using melange:
 ```
-docker run -it -v $(pwd):/w -w /w -v $(pwd)/packages:/w/packages --privileged \
+docker run --rm -it -v $(pwd):/w -w /w -v $(pwd)/packages:/w/packages --privileged \
     distroless.dev/melange build melange.yaml --out-dir /w/packages \
     --arch amd64,aarch64,armv7 \
     --repository-append /w/packages --keyring-append melange.rsa
@@ -75,7 +75,7 @@ docker run -it -v $(pwd):/w -w /w -v $(pwd)/packages:/w/packages --privileged \
 
 To debug the above:
 ```
-docker run -it -v $(pwd):/w -w /w -v $(pwd)/packages:/w/packages --privileged \
+docker run --rm -it -v $(pwd):/w -w /w -v $(pwd)/packages:/w/packages --privileged \
     --entrypoint sh \
     distroless.dev/melange
 
@@ -95,7 +95,7 @@ apk del hello-server --force-broken-world
 
 Create the repo indexes using apk and sign them using melange:
 ```
-docker run -it -v $(pwd):/w -w /w/packages -v $(pwd)/packages:/w/packages \
+docker run --rm -it -v $(pwd):/w -w /w/packages -v $(pwd)/packages:/w/packages \
     --entrypoint sh \
     distroless.dev/melange -c \
         'for d in `find . -type d -mindepth 1`; do \
@@ -117,7 +117,7 @@ Build an apk for all architectures using melange:
 GITHUB_USERNAME="myuser"
 REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
-docker run -it -v $(pwd):/github/workspace -w /github/workspace \
+docker run --rm -it -v $(pwd):/github/workspace -w /github/workspace \
     -v $(pwd)/packages:/github/workspace/packages \
     distroless.dev/apko build --debug apko.yaml \
     "${REF}" output.tar -k melange.rsa.pub \
@@ -126,7 +126,7 @@ docker run -it -v $(pwd):/github/workspace -w /github/workspace \
 
 To debug the above:
 ```
-docker run -it -v $(pwd):/github/workspace -w /github/workspace \
+docker run --rm -it -v $(pwd):/github/workspace -w /github/workspace \
     -v $(pwd)/packages:/github/workspace/packages \
     -e REF="${REF}" \
     --entrypoint sh \
@@ -147,7 +147,7 @@ REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 # A personal access token with the "write:packages" scope
 GITHUB_TOKEN="*****"
 
-docker run -it -v $(pwd):/github/workspace -w /github/workspace \
+docker run --rm -it -v $(pwd):/github/workspace -w /github/workspace \
     -v $(pwd)/packages:/github/workspace/packages \
     -e REF="${REF}" \
     -e GITHUB_USERNAME="${GITHUB_USERNAME}" \
@@ -210,7 +210,7 @@ Finally, run the image using docker:
 GITHUB_USERNAME="myuser"
 REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
-docker run -it --rm -p 8080:8080 "${REF}"
+docker run --rm -it --rm -p 8080:8080 "${REF}"
 ```
 
 Then in another terminal, try hitting the server using curl:
