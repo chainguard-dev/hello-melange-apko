@@ -36,6 +36,7 @@ runs:
       run: |
         ref="ghcr.io/${{ github.repository }}/${{ inputs.variant }}"
         docker pull "${ref}"
+        COSIGN_EXPERIMENTAL=1 cosign verify "${ref}"
         docker run -d --rm -p 8080:8080 --name smoketest "${ref}"
         trap "docker rm -f smoketest" EXIT
         sleep 5 # Give server a few seconds to come up
