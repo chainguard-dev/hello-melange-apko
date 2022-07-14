@@ -1,0 +1,23 @@
+name: go-presubmit
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/actions/presubmit-variant/action.yml
+      - .github/workflows/go-presubmit.yml
+      - go/**
+jobs:
+  build:
+    name: Verify Go variant image (single arch)
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/presubmit-variant
+        with:
+          variant: go
+          archs: amd64

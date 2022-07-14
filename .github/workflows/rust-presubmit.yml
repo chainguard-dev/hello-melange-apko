@@ -1,0 +1,23 @@
+name: rust-presubmit
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/actions/presubmit-variant/action.yml
+      - .github/workflows/rust-presubmit.yml
+      - rust/**
+jobs:
+  build:
+    name: Verify Rust variant image (single arch)
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/presubmit-variant
+        with:
+          variant: rust
+          archs: amd64
