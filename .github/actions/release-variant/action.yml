@@ -15,7 +15,7 @@ runs:
           mv ${{ inputs.variant }}/* ${tmp}/ && \
           mv .github ${tmp}/ && \
           rm -rf ./* && mv ${tmp}/* . && \
-          echo ".github" >> .melangeignore && tree .
+          echo ".github" >> .melangeignore && tree -a .
     - uses: sigstore/cosign-installer@main
     - name: Setup QEMU
       uses: docker/setup-qemu-action@v1.2.0
