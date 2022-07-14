@@ -1,0 +1,23 @@
+name: js-presubmit
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/actions/presubmit-variant/action.yml
+      - .github/workflows/js-presubmit.yml
+      - js/**
+jobs:
+  build:
+    name: Verify JavaScript variant image (single arch)
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/presubmit-variant
+        with:
+          variant: js
+          archs: amd64
