@@ -10,9 +10,6 @@ on:
       - .github/actions/release-variant/action.yml
       - .github/workflows/js.yml
       - js/**
-env:
-  variant: js
-  archs: amd64,aarch64,armv7
 jobs:
   build:
     name: Release JavaScript variant image
@@ -23,22 +20,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v3
-      - name: Populate workspace with variant source only
-        run: |
-          shopt -s dotglob && tmp="$(mktemp -d)" && \
-            mv ${variant}/* ${tmp}/ && rm -rf ./* && mv ${tmp}/* . && tree .
-      - uses: sigstore/cosign-installer@main
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v1.2.0
-      - uses: chainguard-dev/actions/melange-build@main
+      - uses: ./.github/actions/release-variant
         with:
-          sign-with-temporary-key: true
-          config: melange.yaml
-          empty-workspace: false
-          archs: ${{ env.archs }}
-      - uses: distroless/actions/apko-snapshot@main
-        with:
-          config: apko.yaml
-          base-tag: ghcr.io/${{ github.repository }}/${{ env.variant }}
-          keyring-append: /github/workspace/melange.rsa.pub
-          archs: ${{ env.archs }}
+          variant: js
+          archs: amd64,aarch64,armv7
