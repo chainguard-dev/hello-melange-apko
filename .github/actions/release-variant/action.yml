@@ -13,7 +13,9 @@ runs:
       run: |
         shopt -s dotglob && tmp="$(mktemp -d)" && \
           mv ${{ inputs.variant }}/* ${tmp}/ && \
-          rm -rf ./* && mv ${tmp}/* . && tree .
+          mv .github ${tmp}/ && \
+          rm -rf ./* && mv ${tmp}/* . && \
+          echo ".github" >> .melangeignore && tree .
     - uses: sigstore/cosign-installer@main
     - name: Setup QEMU
       uses: docker/setup-qemu-action@v1.2.0
