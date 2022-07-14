@@ -9,6 +9,10 @@ async fn hello(_: Request<Body>) -> Result<Response<Body>, Infallible> {
     Ok(Response::new(Body::from("Hello World!")))
 }
 
+async fn shutdown_signal() {
+    tokio::signal::ctrl_c().await.expect("failed to install CTRL+C handler");
+}
+
 #[tokio::main]
 pub async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     pretty_env_logger::init();
@@ -18,6 +22,6 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let addr = ([0, 0, 0, 0], 8080).into();
     let server = Server::bind(&addr).serve(make_svc);
     println!("Listening on http://{}", addr);
-    server.await?;
+    server.with_graceful_shutdown(shutdown_signal()).await?;
     Ok(())
 }

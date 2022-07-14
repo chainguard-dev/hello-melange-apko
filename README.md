@@ -124,6 +124,12 @@ docker run --rm -it -v $(pwd):/github/workspace -w /github/workspace \
     --build-arch amd64,aarch64,armv7
 ```
 
+If you do not wish to push the image, you could load it directly:
+```
+docker load < output.tar
+docker run --rm "${REF}"
+```
+
 To debug the above:
 ```
 docker run --rm -it -v $(pwd):/github/workspace -w /github/workspace \
