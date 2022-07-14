@@ -18,6 +18,9 @@ runs:
           rm -rf ./* && mv ${tmp}/* . && \
           echo ".github/" >> .melangeignore && tree -a .
 
+    - name: Setup QEMU
+      uses: docker/setup-qemu-action@v1.2.0
+
     - uses: chainguard-dev/actions/melange-build@main
       with:
         sign-with-temporary-key: true
