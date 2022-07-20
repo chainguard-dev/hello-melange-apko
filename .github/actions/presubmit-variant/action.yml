@@ -16,24 +16,34 @@ runs:
           mv ${{ inputs.variant }}/* ${tmp}/ && \
           mv .github ${tmp}/ && \
           rm -rf ./* && mv ${tmp}/* . && \
-          echo ".github/" >> .melangeignore && tree -a .
+          echo ".github/" >> .melangeignore && tree -a . && \
+          sudo rm -rf /work && sudo mkdir /work
 
     - name: Setup QEMU
       uses: docker/setup-qemu-action@v1.2.0
 
     - uses: chainguard-dev/actions/melange-build@main
       with:
-        sign-with-temporary-key: true
-        config: melange.yaml
-        empty-workspace: false
         archs: ${{ inputs.archs }}
+        config: melange.yaml
+        signing-key-path: /work/melange.rsa
+        repository-path: /work/packages
+        empty-workspace: false
+        sign-with-temporary-key: true
 
-    - uses: distroless/actions/apko-build@main
+    - name: Create temp copy of /work directory (used in next step)
+      shell: bash
+      run: |
+        rm -rf .apko-automount && cp -r /work .apko-automount
+
+    - uses: jdolitsky/distroless-actions/apko-build@automount-work-dir
       with:
         config: apko.yaml
         tag: ghcr.io/${{ github.repository }}/${{ inputs.variant }}
-        keyring-append: /github/workspace/melange.rsa.pub
+        keyring-append: /work/melange.rsa.pub
         archs: ${{ inputs.archs }}
+        automount-src: .apko-automount
+        automount-dest: /work
 
     - name: Load image from apko-produced tarball
       shell: bash
