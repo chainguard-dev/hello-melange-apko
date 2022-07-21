@@ -68,27 +68,27 @@ rm -rf ./packages/
 
 Create a temporary melange keypair:
 ```
-docker run --rm -it -v $(pwd):/w -w /w distroless.dev/melange keygen
+docker run --rm -v "${PWD}":/work distroless.dev/melange keygen
 ```
 
 Build an apk for all architectures using melange:
 ```
-docker run --rm -it -v $(pwd):/w -w /w -v $(pwd)/packages:/w/packages --privileged \
-    distroless.dev/melange build melange.yaml --out-dir /w/packages \
+docker run --rm --privileged -v "${PWD}":/work \
+    distroless.dev/melange build melange.yaml \
     --arch amd64,aarch64,armv7 \
-    --repository-append /w/packages --keyring-append melange.rsa
+    --repository-append packages --keyring-append melange.rsa
 ```
 
 To debug the above:
 ```
-docker run --rm -it -v $(pwd):/w -w /w -v $(pwd)/packages:/w/packages --privileged \
+docker run --rm --privileged -it -v "${PWD}":/work \
     --entrypoint sh \
     distroless.dev/melange
 
 # Build apks (use just --arch amd64 to isolate issue)
-melange build melange.yaml --out-dir /w/packages \
+melange build melange.yaml \
     --arch amd64,aarch64,armv7 \
-    --repository-append /w/packages --keyring-append melange.rsa
+    --repository-append packages --keyring-append melange.rsa
 
 # Install an apk
 apk add ./packages/x86_64/hello-server-*.apk --allow-untrusted --force-broken-world
@@ -101,10 +101,10 @@ apk del hello-server --force-broken-world
 
 Create the repo indexes using apk and sign them using melange:
 ```
-docker run --rm -it -v $(pwd):/w -w /w/packages -v $(pwd)/packages:/w/packages \
+docker run --rm -v "${PWD}":/work \
     --entrypoint sh \
     distroless.dev/melange -c \
-        'for d in `find . -type d -mindepth 1`; do \
+        'cd packages && for d in `find . -type d -mindepth 1`; do \
             ( \
                 cd $d && \
                 apk index -o APKINDEX.tar.gz *.apk && \
@@ -123,8 +123,7 @@ Build an apk for all architectures using melange:
 GITHUB_USERNAME="myuser"
 REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
-docker run --rm -it -v $(pwd):/github/workspace -w /github/workspace \
-    -v $(pwd)/packages:/github/workspace/packages \
+docker run --rm -v "${PWD}":/work \
     distroless.dev/apko build --debug apko.yaml \
     "${REF}" output.tar -k melange.rsa.pub \
     --build-arch amd64,aarch64,armv7
@@ -133,13 +132,12 @@ docker run --rm -it -v $(pwd):/github/workspace -w /github/workspace \
 If you do not wish to push the image, you could load it directly:
 ```
 docker load < output.tar
-docker run --rm "${REF}"
+docker run --rm --rm -p 8080:8080  "${REF}"
 ```
 
 To debug the above:
 ```
-docker run --rm -it -v $(pwd):/github/workspace -w /github/workspace \
-    -v $(pwd)/packages:/github/workspace/packages \
+docker run --rm -it -v "${PWD}":/work \
     -e REF="${REF}" \
     --entrypoint sh \
     distroless.dev/apko
@@ -159,8 +157,7 @@ REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 # A personal access token with the "write:packages" scope
 GITHUB_TOKEN="*****"
 
-docker run --rm -it -v $(pwd):/github/workspace -w /github/workspace \
-    -v $(pwd)/packages:/github/workspace/packages \
+docker run --rm -v "${PWD}":/work \
     -e REF="${REF}" \
     -e GITHUB_USERNAME="${GITHUB_USERNAME}" \
     -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
@@ -222,7 +219,7 @@ Finally, run the image using docker:
 GITHUB_USERNAME="myuser"
 REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
-docker run --rm -it --rm -p 8080:8080 "${REF}"
+docker run --rm --rm -p 8080:8080 "${REF}"
 ```
 
 Then in another terminal, try hitting the server using curl:
