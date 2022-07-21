@@ -36,7 +36,7 @@ runs:
       run: |
         rm -rf .apko-automount && cp -r /work .apko-automount
 
-    - uses: jdolitsky/distroless-actions/apko-snapshot@pr-34-lock
+    - uses: distroless/actions/apko-snapshot@main
       with:
         archs: ${{ inputs.archs }}
         config: apko.yaml
