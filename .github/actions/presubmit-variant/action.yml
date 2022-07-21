@@ -36,7 +36,7 @@ runs:
       run: |
         rm -rf .apko-automount && cp -r /work .apko-automount
 
-    - uses: jdolitsky/distroless-actions/apko-build@automount-work-dir
+    - uses: distroless/actions/apko-build@main
       with:
         config: apko.yaml
         tag: ghcr.io/${{ github.repository }}/${{ inputs.variant }}
