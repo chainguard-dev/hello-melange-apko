@@ -76,7 +76,7 @@ Build an apk for all architectures using melange:
 docker run --rm --privileged -v "${PWD}":/work \
     distroless.dev/melange build melange.yaml \
     --arch amd64,aarch64,armv7 \
-    --repository-append packages --keyring-append melange.rsa
+    --repository-append packages --keyring-append melange.rsa --signing-key melange.rsa
 ```
 
 To debug the above:
@@ -88,29 +88,13 @@ docker run --rm --privileged -it -v "${PWD}":/work \
 # Build apks (use just --arch amd64 to isolate issue)
 melange build melange.yaml \
     --arch amd64,aarch64,armv7 \
-    --repository-append packages --keyring-append melange.rsa
+    --repository-append packages --keyring-append melange.rsa --signing-key melange.rsa
 
 # Install an apk
 apk add ./packages/x86_64/hello-server-*.apk --allow-untrusted --force-broken-world
 
 # Delete an apk
 apk del hello-server --force-broken-world
-```
-
-### Generate apk repo indexes
-
-Create the repo indexes using apk and sign them using melange:
-```
-docker run --rm -v "${PWD}":/work \
-    --entrypoint sh \
-    distroless.dev/melange -c \
-        'cd packages && for d in `find . -type d -mindepth 1`; do \
-            ( \
-                cd $d && \
-                apk index -o APKINDEX.tar.gz *.apk && \
-                melange sign-index --signing-key=../../melange.rsa APKINDEX.tar.gz\
-            ) \
-        done'
 ```
 
 ### Build image with apko
