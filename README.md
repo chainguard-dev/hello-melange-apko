@@ -76,7 +76,7 @@ Build an apk for all architectures using melange:
 docker run --rm --privileged -v "${PWD}":/work \
     distroless.dev/melange build melange.yaml \
     --arch amd64,aarch64,armv7 \
-    --repository-append packages --keyring-append melange.rsa --signing-key melange.rsa
+    --repository-append packages --signing-key melange.rsa
 ```
 
 To debug the above:
@@ -88,7 +88,7 @@ docker run --rm --privileged -it -v "${PWD}":/work \
 # Build apks (use just --arch amd64 to isolate issue)
 melange build melange.yaml \
     --arch amd64,aarch64,armv7 \
-    --repository-append packages --keyring-append melange.rsa --signing-key melange.rsa
+    --repository-append packages --signing-key melange.rsa
 
 # Install an apk
 apk add ./packages/x86_64/hello-server-*.apk --allow-untrusted --force-broken-world
