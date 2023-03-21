@@ -68,27 +68,27 @@ rm -rf ./packages/
 
 Create a temporary melange keypair:
 ```
-docker run --rm -v "${PWD}":/work distroless.dev/melange keygen
+docker run --rm -v "${PWD}":/work cgr.dev/chainguard/melange keygen
 ```
 
 Build an apk for all architectures using melange:
 ```
 docker run --rm --privileged -v "${PWD}":/work \
-    distroless.dev/melange build melange.yaml \
+    cgr.dev/chainguard/melange build melange.yaml \
     --arch amd64,aarch64,armv7 \
-    --repository-append packages --signing-key melange.rsa
+    --signing-key melange.rsa
 ```
 
 To debug the above:
 ```
 docker run --rm --privileged -it -v "${PWD}":/work \
     --entrypoint sh \
-    distroless.dev/melange
+    cgr.dev/chainguard/melange
 
 # Build apks (use just --arch amd64 to isolate issue)
 melange build melange.yaml \
     --arch amd64,aarch64,armv7 \
-    --repository-append packages --signing-key melange.rsa
+    --signing-key melange.rsa
 
 # Install an apk
 apk add ./packages/x86_64/hello-server-*.apk --allow-untrusted --force-broken-world
@@ -108,26 +108,29 @@ GITHUB_USERNAME="myuser"
 REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
 docker run --rm -v "${PWD}":/work \
-    distroless.dev/apko build --debug apko.yaml \
+    cgr.dev/chainguard/apko build --debug apko.yaml \
     "${REF}" output.tar -k melange.rsa.pub \
-    --build-arch amd64,aarch64,armv7
+    --arch amd64,aarch64,armv7
 ```
 
 If you do not wish to push the image, you could load it directly:
 ```
-docker load < output.tar
-docker run --rm --rm -p 8080:8080  "${REF}"
+ARCH_REF="$(docker load < output.tar | grep "Loaded image" | sed 's/^Loaded image: //' | head -1)"
+docker run --rm --rm -p 8080:8080  "${ARCH_REF}"
 ```
+
+Note: The output of `docker load` will print all architectures. The command above just picks the first one.
+You could also choose to run `docker load < output.tar` and manually copy the architecture that matches your system.
 
 To debug the above:
 ```
 docker run --rm -it -v "${PWD}":/work \
     -e REF="${REF}" \
     --entrypoint sh \
-    distroless.dev/apko
+    cgr.dev/chainguard/apko
 
-# Build image (use just --build-arch amd64 to isolate issue)
-apko build --debug apko.yaml "${REF}" output.tar -k melange.rsa.pub --build-arch amd64,aarch64,armv7
+# Build image (use just --arch amd64 to isolate issue)
+apko build --debug apko.yaml "${REF}" output.tar -k melange.rsa.pub --arch amd64,aarch64,armv7
 ```
 
 ## Push image with apko
@@ -146,7 +149,7 @@ docker run --rm -v "${PWD}":/work \
     -e GITHUB_USERNAME="${GITHUB_USERNAME}" \
     -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
     --entrypoint sh \
-    distroless.dev/apko -c \
+    cgr.dev/chainguard/apko -c \
         'echo "${GITHUB_TOKEN}" | \
             apko login ghcr.io -u "${GITHUB_USERNAME}" --password-stdin && \
             apko publish --debug apko.yaml \
@@ -156,14 +159,14 @@ docker run --rm -v "${PWD}":/work \
 
 ## Sign image with cosign
 
-After the image has been published, sign it recursively using cosign:
+After the image has been published, sign it recursively using cosign (2.0+):
 
 ```
 # Your GitHub username
 GITHUB_USERNAME="myuser"
 REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
-COSIGN_EXPERIMENTAL=1 cosign sign -r -y -f "${REF}"
+cosign sign -r -y "${REF}"
 ```
 
 This should use "keyless" mode and open a browser window for you to
@@ -191,7 +194,7 @@ Verify that the image is signed using cosign:
 GITHUB_USERNAME="myuser"
 REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
-COSIGN_EXPERIMENTAL=1 cosign verify "${REF}"
+cosign verify "${REF}" --certificate-identity-regexp=.* --certificate-oidc-issuer-regexp=.*
 ```
 
 ## Run the hello server image

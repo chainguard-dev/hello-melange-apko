@@ -36,13 +36,13 @@ runs:
       run: |
         rm -rf .apko-automount && cp -r /work .apko-automount
 
-    - uses: distroless/actions/apko-build@main
+    - uses: chainguard-images/actions/apko-build@main
       with:
         config: apko.yaml
         tag: ghcr.io/${{ github.repository }}/${{ inputs.variant }}
         keyring-append: /work/melange.rsa.pub
         archs: ${{ inputs.archs }}
-        automount-src: .apko-automount
+        automount-src: .apko-automount/.
         automount-dest: /work
 
     - name: Load image from apko-produced tarball

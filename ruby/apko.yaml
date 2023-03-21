@@ -1,10 +1,10 @@
 contents:
   repositories:
     - https://dl-cdn.alpinelinux.org/alpine/edge/main
-    - '@local /work/packages'
+    - /work/packages
   packages:
     - alpine-baselayout-data
-    - hello-server@local
+    - hello-server
 accounts:
   groups:
     - groupname: nonroot
