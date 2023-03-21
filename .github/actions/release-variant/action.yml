@@ -42,7 +42,7 @@ runs:
         config: apko.yaml
         base-tag: ghcr.io/${{ github.repository }}/${{ inputs.variant }}
         keyring-append: /work/melange.rsa.pub
-        automount-src: .apko-automount
+        automount-src: .apko-automount/.
         automount-dest: /work
 
     - name: Smoke test
