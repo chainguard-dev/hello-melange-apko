@@ -55,3 +55,4 @@ runs:
         trap "docker rm -f smoketest" EXIT
         sleep 5 # Give server a few seconds to come up
         curl -v --max-time 10 http://localhost:8080/ | grep 'Hello World!'
+
