@@ -68,13 +68,14 @@ rm -rf ./packages/
 
 Create a temporary melange keypair:
 ```
-docker run --rm -v "${PWD}":/work cgr.dev/chainguard/melange keygen
+docker run --rm -v "${PWD}":/work --entrypoint=melange --workdir=/work ghcr.io/wolfi-dev/sdk keygen
 ```
 
 Build an apk for all architectures using melange:
 ```
-docker run --rm --privileged -v "${PWD}":/work \
-    cgr.dev/chainguard/melange build melange.yaml \
+docker run --rm --privileged -v "${PWD}":/work  \
+    --entrypoint=melange --workdir=/work \
+    cgr.dev/chainguard/sdk build melange.yaml \
     --arch amd64,aarch64,armv7 \
     --signing-key melange.rsa
 ```
@@ -83,7 +84,7 @@ To debug the above:
 ```
 docker run --rm --privileged -it -v "${PWD}":/work \
     --entrypoint sh \
-    cgr.dev/chainguard/melange
+    cgr.dev/chainguard/sdk
 
 # Build apks (use just --arch amd64 to isolate issue)
 melange build melange.yaml \
@@ -108,7 +109,7 @@ GITHUB_USERNAME="myuser"
 REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 
 docker run --rm -v "${PWD}":/work \
-    cgr.dev/chainguard/apko build --debug apko.yaml \
+    --entrypoint=apko --workdir=/work ghcr.io/wolfi-dev/sdk build --debug apko.yaml \
     "${REF}" output.tar -k melange.rsa.pub \
     --arch amd64,aarch64,armv7
 ```
@@ -127,7 +128,7 @@ To debug the above:
 docker run --rm -it -v "${PWD}":/work \
     -e REF="${REF}" \
     --entrypoint sh \
-    cgr.dev/chainguard/apko
+    --workdir=/work ghcr.io/wolfi-dev/sdk
 
 # Build image (use just --arch amd64 to isolate issue)
 apko build --debug apko.yaml "${REF}" output.tar -k melange.rsa.pub --arch amd64,aarch64,armv7
@@ -149,7 +150,7 @@ docker run --rm -v "${PWD}":/work \
     -e GITHUB_USERNAME="${GITHUB_USERNAME}" \
     -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
     --entrypoint sh \
-    cgr.dev/chainguard/apko -c \
+    --workdir=/work ghcr.io/wolfi-dev/sdk -c \
         'echo "${GITHUB_TOKEN}" | \
             apko login ghcr.io -u "${GITHUB_USERNAME}" --password-stdin && \
             apko publish --debug apko.yaml \
