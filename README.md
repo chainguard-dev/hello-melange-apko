@@ -77,7 +77,7 @@ docker run --rm --privileged -v "${PWD}":/work  \
     --entrypoint=melange --workdir=/work \
     cgr.dev/chainguard/sdk build melange.yaml \
     --arch amd64,aarch64,armv7 \
-    --signing-key melange.rsa
+    --signing-key /work/melange.rsa
 ```
 
 To debug the above:
@@ -89,7 +89,7 @@ docker run --rm --privileged -it -v "${PWD}":/work \
 # Build apks (use just --arch amd64 to isolate issue)
 melange build melange.yaml \
     --arch amd64,aarch64,armv7 \
-    --signing-key melange.rsa
+    --signing-key /work/melange.rsa
 
 # Install an apk
 apk add ./packages/x86_64/hello-server-*.apk --allow-untrusted --force-broken-world
