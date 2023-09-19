@@ -43,7 +43,7 @@ Requirements:
 - [`docker`](https://docs.docker.com/get-docker/)
 - [`cosign`](https://docs.sigstore.dev/cosign/installation/)
 
-Note: these steps should also work without `docker` on an apk-based Linux distribution such as [Alpine](https://www.alpinelinux.org/).
+Note: these steps should also work without `docker`, but you may need to install [bubblewrap](https://github.com/containers/bubblewrap) to run Melange builds.
 
 ### Change directory
 
@@ -75,8 +75,8 @@ Build an apk for all architectures using melange:
 ```
 docker run --rm --privileged -v "${PWD}":/work  \
     --entrypoint=melange --workdir=/work \
-    cgr.dev/chainguard/sdk build melange.yaml \
-    --arch amd64,aarch64,armv7 \
+    ghcr.io/wolfi-dev/sdk build melange.yaml \
+    --arch amd64,arm64 \
     --signing-key melange.rsa
 ```
 
@@ -84,11 +84,11 @@ To debug the above:
 ```
 docker run --rm --privileged -it -v "${PWD}":/work \
     --entrypoint sh \
-    cgr.dev/chainguard/sdk
+    ghcr.io/wolfi-dev/sdk
 
 # Build apks (use just --arch amd64 to isolate issue)
 melange build melange.yaml \
-    --arch amd64,aarch64,armv7 \
+    --arch amd64,arm64 \
     --signing-key melange.rsa
 
 # Install an apk
@@ -111,7 +111,7 @@ REF="ghcr.io/${GITHUB_USERNAME}/hello-melange-apko/$(basename "${PWD}")"
 docker run --rm -v "${PWD}":/work \
     --entrypoint=apko --workdir=/work ghcr.io/wolfi-dev/sdk build --debug apko.yaml \
     "${REF}" output.tar -k melange.rsa.pub \
-    --arch amd64,aarch64,armv7
+    --arch amd64,arm64
 ```
 
 If you do not wish to push the image, you could load it directly:
@@ -131,7 +131,7 @@ docker run --rm -it -v "${PWD}":/work \
     --workdir=/work ghcr.io/wolfi-dev/sdk
 
 # Build image (use just --arch amd64 to isolate issue)
-apko build --debug apko.yaml "${REF}" output.tar -k melange.rsa.pub --arch amd64,aarch64,armv7
+apko build --debug apko.yaml "${REF}" output.tar -k melange.rsa.pub --arch amd64,arm64
 ```
 
 ## Push image with apko
@@ -155,7 +155,7 @@ docker run --rm -v "${PWD}":/work \
             apko login ghcr.io -u "${GITHUB_USERNAME}" --password-stdin && \
             apko publish --debug apko.yaml \
                 "${REF}" -k melange.rsa.pub \
-                --arch amd64,aarch64,armv7'
+                --arch amd64,arm64'
 ```
 
 ## Sign image with cosign

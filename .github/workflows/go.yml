@@ -23,4 +23,4 @@ jobs:
       - uses: ./.github/actions/release-variant
         with:
           variant: go
-          archs: amd64,aarch64,armv7
+          archs: amd64,arm64
